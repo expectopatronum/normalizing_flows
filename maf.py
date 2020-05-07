@@ -388,7 +388,7 @@ class MAF(nn.Module):
         # base distribution for calculation of log prob under the model
         self.register_buffer('base_dist_mean', torch.zeros(input_size))
         self.register_buffer('base_dist_var', torch.ones(input_size))
-
+        print("MAF", n_blocks, input_size, hidden_size, n_hidden, cond_label_size)
         # construct model
         modules = []
         self.input_degrees = None
@@ -410,6 +410,7 @@ class MAF(nn.Module):
         return self.net.inverse(u, y)
 
     def log_prob(self, x, y=None):
+        y = y.squeeze()
         u, sum_log_abs_det_jacobians = self.forward(x, y)
         return torch.sum(self.base_dist.log_prob(u) + sum_log_abs_det_jacobians, dim=1)
 
